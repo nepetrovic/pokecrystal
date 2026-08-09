@@ -1,5 +1,5 @@
 _FruitBearingTreeText::
-	text "It's a fruit-"
+	text "It's a butt-"
 	line "bearing tree."
 	done
 

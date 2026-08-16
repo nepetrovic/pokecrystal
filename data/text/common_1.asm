@@ -154,55 +154,47 @@ _CardFolderOpenText::
 	text_end
 
 _OakTimeWokeUpText::
-	text "<……><……><……><……><……><……>"
-	line "<……><……><……><……><……><……>"
-
-	para "Zzz… Hm? Wha…?"
-	line "You woke me up!"
-
-	para "Will you check the"
-	line "clock for me?"
+	text "Please set"
+	line "the clock."
 	prompt
 
 _OakTimeWhatTimeIsItText::
-	text "What time is it?"
+	text "Set the hour."
 	done
 
 _OakTimeWhatHoursText::
-	text "What?@"
+	text "Please confirm:"
 	text_end
 
 _OakTimeHoursQuestionMarkText::
-	text "?"
+	text ""
 	done
 
 _OakTimeHowManyMinutesText::
-	text "How many minutes?"
+	text "Set the minutes."
 	done
 
 _OakTimeWhoaMinutesText::
-	text "Whoa!@"
+	text "Confirm: @"
 	text_end
 
 _OakTimeMinutesQuestionMarkText::
-	text "?"
+	text ""
 	done
 
 _OakTimeOversleptText::
-	text "!"
-	line "I overslept!"
+	text ""
+	line "Clock set!"
 	done
 
 _OakTimeYikesText::
-	text "!"
-	line "Yikes! I over-"
-	cont "slept!"
+	text ""
+	line "Clock set!"
 	done
 
 _OakTimeSoDarkText::
-	text "!"
-	line "No wonder it's so"
-	cont "dark!"
+	text ""
+	line "Clock set!"
 	done
 
 _OakTimeWhatDayIsItText::

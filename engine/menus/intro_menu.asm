@@ -194,7 +194,7 @@ _ResetWRAM:
 	ld [wCoins], a
 	ld [wCoins + 1], a
 
-if START_MONEY >= $10000
+if START_MONEY >= $10001
 	ld a, HIGH(START_MONEY >> 8)
 endc
 	ld [wMoney], a
@@ -298,7 +298,7 @@ InitializeNPCNames:
 	call CopyBytes
 	ret
 
-.Rival:  db "???@"
+.Rival:  db "BLUE@"
 .Red:    db "RED@"
 .Green:  db "GREEN@"
 .Mom:    db "MOM@"
@@ -649,7 +649,7 @@ OakSpeech:
 	call RotateThreePalettesRight
 	call ClearTilemap
 
-	ld a, WOOPER
+	ld a, NIDORINO
 	ld [wCurSpecies], a
 	ld [wCurPartySpecies], a
 	call GetBaseData
@@ -700,6 +700,37 @@ OakSpeech:
 	call NamePlayer
 	ld hl, OakText7
 	call PrintText
+
+	call RotateThreePalettesRight
+	call ClearTilemap
+	
+	xor a
+	ld [wCurPartySpecies], a
+	ld a, RIVAL1
+	ld [wTrainerClass], a
+	call Intro_PrepTrainerPic
+	
+	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	call GetSGBLayout
+	call Intro_RotatePalettesLeftFrontpic
+	
+	ld hl, OakText8
+	call PrintText
+	call NameRivalIntro
+	ld hl, OakText9
+	call PrintText
+	call RotateThreePalettesRight
+	call ClearTilemap
+	
+	xor a
+	ld [wCurPartySpecies], a
+	farcall DrawIntroPlayerPic
+	
+	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	call GetSGBLayout
+	call Intro_RotatePalettesLeftFrontpic
+	ld hl, OakText10
+	call PrintText
 	ret
 
 OakText1:
@@ -709,7 +740,7 @@ OakText1:
 OakText2:
 	text_far _OakText2
 	text_asm
-	ld a, WOOPER
+	ld a, NIDORINO
 	call PlayMonCry
 	call WaitSFX
 	ld hl, OakText3
@@ -735,6 +766,18 @@ OakText7:
 	text_far _OakText7
 	text_end
 
+OakText8:
+	text_far _OakText8
+	text_end
+
+OakText9:
+	text_far _OakText9
+	text_end
+
+OakText10:
+	text_far _OakText10
+	text_end
+	
 NamePlayer:
 	farcall MovePlayerPicRight
 	farcall ShowPlayerNamingChoices
@@ -780,6 +823,75 @@ NamePlayer:
 .Kris:
 	dname "KRIS", NAME_LENGTH
 
+NameRivalIntro:
+	farcall MovePlayerPicRight
+	call ShowRivalNamingChoices
+	ld a, [wMenuCursorY]
+	dec a
+	jr z, .NewName
+	call StoreRivalName
+	farcall ApplyMonOrTrainerPals
+	farcall MovePlayerPicLeft
+	ret
+
+.NewName:
+	ld b, NAME_RIVAL
+	ld de, wRivalName
+	farcall NamingScreen
+
+	call RotateThreePalettesRight
+	call ClearTilemap
+
+	call LoadFontsExtra
+	call WaitBGMap
+
+	xor a
+	ld [wCurPartySpecies], a
+	ld a, RIVAL1
+	ld [wTrainerClass], a
+	call Intro_PrepTrainerPic
+
+	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	call GetSGBLayout
+	call RotateThreePalettesLeft
+
+	ld hl, wRivalName
+	ld de, RivalNames
+	call InitName
+	ret
+
+.RivalName:
+	db "BLUE@@@@@@"
+
+ShowRivalNamingChoices:
+	ld hl, RivalNameMenuHeaderIntro
+	call LoadMenuHeader
+	call VerticalMenu
+	ld a, [wMenuCursorY]
+	dec a
+	call CopyNameFromMenu
+	call CloseWindow
+	ret
+
+RivalNameMenuHeaderIntro:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 10, TEXTBOX_Y - 1
+	dw .Names
+	db 1 ; default option
+	db 0 ; ????
+
+.Names:
+	db STATICMENU_CURSOR | STATICMENU_PLACE_TITLE | STATICMENU_DISABLE_B ; flags
+	db 5 ; items
+	db "NEW NAME@"
+RivalNames:
+	db "BLUE@"
+	db "GARY@"
+	db "MAX@"
+	db "ASS@"
+	db 2 ; title indent
+	db " NAME @" ; title
+
 GSShowPlayerNamingChoices: ; unreferenced
 	call LoadMenuHeader
 	call VerticalMenu
@@ -795,6 +907,16 @@ StorePlayerName:
 	ld hl, wPlayerName
 	call ByteFill
 	ld hl, wPlayerName
+	ld de, wStringBuffer2
+	call CopyName2
+	ret
+
+StoreRivalName:
+	ld a, "@"
+	ld bc, NAME_LENGTH
+	ld hl, wRivalName
+	call ByteFill
+	ld hl, wRivalName
 	ld de, wStringBuffer2
 	call CopyName2
 	ret

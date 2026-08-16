@@ -318,13 +318,13 @@ OakTimeHowManyMinutesText:
 	text_end
 
 String_min:
-	db "min.@"
+	db "min@"
 
 OakTimeWhoaMinutesText:
 	; Whoa!@ @
 	text_far _OakTimeWhoaMinutesText
 	text_asm
-	hlcoord 7, 14
+	hlcoord 10, 14
 	call DisplayMinutesWithMinString
 	ld hl, .OakTimeMinutesQuestionMarkText
 	ret
